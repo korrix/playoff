@@ -12,6 +12,7 @@ class User {
 
     [[nodiscard]] bool isValid() const;
     bool operator==(const User& other) const;
+    bool operator!=(const User& other) const;
 
   private:
     std::string name_;

@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include "model/Message.h"
 
-TEST(User, MessageValidation) {
+TEST(Message, MessageValidation) {
     model::User user;
     model::Room room;
     model::Message message;

@@ -8,8 +8,9 @@ namespace model {
 class Message {
   public:
     Message() = default;
+    virtual ~Message() = default;
 
-    void setSender(const User& sender);
+    virtual void setSender(const User& sender);
     [[nodiscard]] const User& sender() const;
 
     void setRoom(const Room& room);
@@ -18,7 +19,7 @@ class Message {
     void setText(const std::string& text);
     [[nodiscard]] const std::string& text() const;
 
-    [[nodiscard]] bool isValid() const;
+    [[nodiscard]] virtual bool isValid() const;
   private:
     User sender_;
     Room room_;

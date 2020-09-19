@@ -27,4 +27,8 @@ bool User::isValid() const {
 bool User::operator==(const User &other) const {
     return name_ == other.name();
 }
+
+bool User::operator!=(const User &other) const {
+    return !(*this == other);
+}
 }  // namespace model
