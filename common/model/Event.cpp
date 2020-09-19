@@ -31,7 +31,7 @@ Event model::Event::make(const model::Room &room) {
 
 Event model::Event::make(const std::runtime_error &error) {
     model::Event ev;
-    ev.type_ = model::Event::Type::ERROR;
+    ev.type_ = model::Event::Type::EV_ERROR;
     ev.payload_ = error;
     return ev;
 }
@@ -83,7 +83,7 @@ nlohmann::json toJson<model::Event>(const model::Event &event) {
             case model::Event::Type::CREATE_ROOM:
                 jt = "create_room";
                 break;
-            case model::Event::Type::ERROR:
+            case model::Event::Type::EV_ERROR:
                 jt = "error";
             default:
                 break;
@@ -114,7 +114,7 @@ model::Event fromJson<model::Event>(const nlohmann::json &json) {
         event.type_    = model::Event::Type::CREATE_ROOM;
         event.payload_ = fromJson<model::Room>(jp);
     } else if(jt == "exception") {
-        event.type_ = model::Event::Type::ERROR;
+        event.type_ = model::Event::Type::EV_ERROR;
         event.payload_ = fromJson<std::runtime_error>(jp);
     }
 

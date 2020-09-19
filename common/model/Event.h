@@ -23,7 +23,7 @@ namespace model {
 class Event {
   public:
     Event() = default;
-    enum class Type { INVALID_EVENT, REGISTER_USER, INVITE_USER, MESSAGE, CREATE_ROOM, ERROR };
+    enum class Type { INVALID_EVENT, REGISTER_USER, INVITE_USER, MESSAGE, CREATE_ROOM, EV_ERROR };
 
     [[nodiscard]] const Type &type() const;
 
