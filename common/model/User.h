@@ -1,13 +1,17 @@
 #pragma once
 
 #include <string>
+
 namespace model {
 class User {
   public:
     User() = default;
 
-    const std::string &name() const;
+    [[nodiscard]] const std::string &name() const;
     void setName(const std::string &name);
+
+    [[nodiscard]] bool isValid() const;
+    bool operator==(const User& other) const;
 
   private:
     std::string name_;

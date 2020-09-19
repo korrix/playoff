@@ -18,4 +18,12 @@ void Room::setName(const std::string &name) {
 bool Room::isNameValid(const std::string &name) {
     return !name.empty();
 }
+
+bool Room::isValid() const {
+    return isNameValid(name_);
 }
+
+bool Room::operator==(const Room &other) const {
+    return name_ == other.name();
+}
+}  // namespace model
