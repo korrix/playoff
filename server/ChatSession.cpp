@@ -18,13 +18,15 @@ void ChatSession::start() {
 
 void ChatSession::readRequest() {
     boost::asio::async_read_until(socket_, inputBuffer, '\n',
-                                  [self = shared_from_this()](const boost::system::error_code &e, std::size_t) {
+                                  [self = shared_from_this()](const boost::system::error_code &e, std::size_t size) {
                                       if(!e) {
                                           std::istream is(&self->inputBuffer);
                                           self->dispatch(is);
                                       } else {
                                           self->cleanup();
                                       }
+
+                                      self->inputBuffer.consume(size);
                                   });
 }
 

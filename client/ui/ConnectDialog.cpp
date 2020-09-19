@@ -24,9 +24,9 @@ void ConnectDialog::connect() {
 
         std::shared_ptr<networking::Connection> connection = connectionManager_.connect(server, port);
 
-        auto username = ui_->usernameInput->text().toStdString();
-        auto chat = networking::Chat::init(connection, username);
-        emit chatConnected(std::move(chat));
+        auto username = ui_->usernameInput->text();
+        auto chat = networking::Chat::init(connection, username.toStdString());
+        emit chatConnected(std::move(chat), username);
         accept();
 
     } catch(const std::exception &ex) {

@@ -16,4 +16,22 @@ void Chat::joinRoom(const std::string &name) {
     room.setName(name);
     connection_->request(model::Event::make(room));
 }
+
+void Chat::inviteUser(const std::string &currentUserName, const std::string &roomName, const std::string &invitedUserName) {
+    model::User current, invited;
+    current.setName(currentUserName);
+    invited.setName(invitedUserName);
+
+    model::Room room;
+    room.setName(roomName);
+
+    model::Invitation invitation;
+    invitation.setSender(current);
+    invitation.setInvited(invited);
+    invitation.setRoom(room);
+    invitation.setText("You've just got invited!");
+
+    connection_->request(model::Event::make(invitation));
+}
+
 }  // namespace networking

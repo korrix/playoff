@@ -23,7 +23,7 @@ class ConnectDialog : public QDialog {
     void cancel();
 
   signals:
-    void chatConnected(std::shared_ptr<networking::Chat>);
+    void chatConnected(std::shared_ptr<networking::Chat>, QString);
 
   private:
     networking::ConnectionManager& connectionManager_;
