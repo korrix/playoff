@@ -1,0 +1,40 @@
+install(DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+        DESTINATION .
+        COMPONENT applications
+        FILES_MATCHING PATTERN "*.dll"
+        )
+install(FILES ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/playoff_client.exe
+        DESTINATION bin
+        COMPONENT Client
+        )
+install(FILES ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/playoff_server.exe
+        DESTINATION bin
+        COMPONENT Server
+        )
+
+set(CPACK_GENERATOR NSIS64)
+set(CPACK_PACKAGE_NAME ${PROJECT_NAME})
+set(CPACK_PACKAGE_VENDOR "Konrad Lewandowski")
+set(CPACK_PACKAGE_DESCRIPTION "Playoff task")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Playoff task implementation")
+set(CPACK_PACKAGE_INSTALL_DIRECTORY "Konrad\\\\${PROJECT_NAME}")
+set(CPACK_PACKAGE_ICON "${CMAKE_SOURCE_DIR}\\\\client\\\\resources\\\\icon.png")
+set(CPACK_PACKAGE_EXECUTABLES
+        "playoff_client" Client
+        "playoff_server" Server
+)
+
+set(CPACK_NSIS_PACKAGE_NAME "${PROJECT_NAME} v${PROJECT_VERSION}")
+set(CPACK_NSIS_DISPLAY_NAME "${PROJECT_NAME}")
+set(CPACK_NSIS_DEFINES "  !define MUI_STARTMENUPAGE_DEFAULTFOLDER \\\"Konrad\\\\${PROJECT_NAME}\\\"")
+set(CPACK_NSIS_ENABLE_UNINSTALL_BEFORE_INSTALL TRUE)
+set(CPACK_NSIS_MUI_ICON ${CMAKE_SOURCE_DIR}/client/resources/icon.ico)
+set(CPACK_NSIS_MUI_UNIICON ${CMAKE_SOURCE_DIR}/client/resources/icon.ico)
+
+set(CPACK_RESOURCE_FILE_LICENSE ${CMAKE_SOURCE_DIR}/LICENSE.txt)
+
+set(CPACK_COMPONENTS_ALL applications Client Server)
+set(CPACK_COMPONENT_APPLICATIONS_DISPLAY_NAME "Playoff")
+set(CPACK_COMPONENT_APPLICATIONS_REQUIRED TRUE)
+
+include(CPack)

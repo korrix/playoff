@@ -1,0 +1,12 @@
+{
+  "name": "playoff",
+  "version-string": "0.1",
+  "dependencies": [
+    "boost-asio",
+    "boost-di",
+    "boost-uuid",
+    "gtest",
+    "nlohmann-json",
+    "spdlog"
+  ]
+}
