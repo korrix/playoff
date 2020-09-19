@@ -8,7 +8,7 @@ std::unique_ptr<Chat> Chat::init(std::shared_ptr<Connection> connection, const s
     model::User user;
     user.setName(username);
     auto response = connection->request(model::Event::make(user));
-    return std::unique_ptr<Chat>(new Chat(connection));
+    return std::unique_ptr<Chat>(new Chat(connection, user));
 }
 
 void Chat::joinRoom(const std::string &name) {
@@ -17,21 +17,32 @@ void Chat::joinRoom(const std::string &name) {
     connection_->request(model::Event::make(room));
 }
 
-void Chat::inviteUser(const std::string &currentUserName, const std::string &roomName, const std::string &invitedUserName) {
-    model::User current, invited;
-    current.setName(currentUserName);
+void Chat::inviteUser(const std::string &roomName, const std::string &invitedUserName) {
+    model::User invited;
     invited.setName(invitedUserName);
 
     model::Room room;
     room.setName(roomName);
 
     model::Invitation invitation;
-    invitation.setSender(current);
+    invitation.setSender(current_);
     invitation.setInvited(invited);
     invitation.setRoom(room);
     invitation.setText("You've just got invited!");
 
     connection_->request(model::Event::make(invitation));
+}
+
+void Chat::message(const std::string &roomName, const std::string &messageText) {
+    model::Room room;
+    room.setName(roomName);
+
+    model::Message message;
+    message.setSender(current_);
+    message.setRoom(room);
+    message.setText(messageText);
+
+    connection_->request(model::Event::make(message));
 }
 
 }  // namespace networking

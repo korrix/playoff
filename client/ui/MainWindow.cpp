@@ -12,9 +12,8 @@ MainWindow::MainWindow() {
     ui_->setupUi(this);
 }
 
-void MainWindow::chatConnected(std::shared_ptr<networking::Chat> chat, const QString& username) {
+void MainWindow::chatConnected(std::shared_ptr<networking::Chat> chat) {
     chat_ = chat;
-    username_ = username;
     ui_->centralWidget->setEnabled(true);
 }
 
@@ -36,7 +35,7 @@ void MainWindow::inviteUser() {
         if(chat_) {
             auto currentRoomName = roomNames[ui_->tabWidget->currentIndex()].toStdString();
             auto invitedUser = ui_->inviteUserName->text().toStdString();
-            chat_->inviteUser(username_.toStdString(), currentRoomName, invitedUser);
+            chat_->inviteUser(currentRoomName, invitedUser);
             ui_->inviteUserName->setText("");
         }
     } catch(const std::exception &ex) {
@@ -58,6 +57,11 @@ void MainWindow::openChannelTab(const QString &channelName) {
     tabUi.setupUi(widget);
     auto idx = ui_->tabWidget->addTab(widget, channelName);
     ui_->tabWidget->setCurrentIndex(idx);
+
+    connect(tabUi.sendButton, &QPushButton::clicked, [this, channelName, input = tabUi.msgEdit]() {
+        chat_->message(channelName.toStdString(), input->text().toStdString());
+        input->setText("");
+    });
 
     roomNames[idx] = channelName;
 }

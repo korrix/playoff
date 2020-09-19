@@ -26,7 +26,7 @@ void ConnectDialog::connect() {
 
         auto username = ui_->usernameInput->text();
         auto chat = networking::Chat::init(connection, username.toStdString());
-        emit chatConnected(std::move(chat), username);
+        emit chatConnected(std::move(chat));
         accept();
 
     } catch(const std::exception &ex) {
