@@ -23,9 +23,9 @@ namespace model {
 class Event {
   public:
     Event() = default;
-    enum class Type { INVALID_EVENT, REGISTER_USER, INVITE_USER, MESSAGE, CREATE_ROOM };
+    enum class Type { INVALID_EVENT, REGISTER_USER, INVITE_USER, MESSAGE, CREATE_ROOM, ERROR };
 
-    const Type &type() const;
+    [[nodiscard]] const Type &type() const;
 
     template<typename F>
     constexpr auto visit(F &&visitor) const {
@@ -36,6 +36,6 @@ class Event {
     friend model::Event serialization::fromJson<model::Event>(const nlohmann::json &json);
 
     Type type_ = Type::INVALID_EVENT;
-    std::variant<std::monostate, User, Invitation, Message, Room> payload_;
+    std::variant<std::monostate, User, Invitation, Message, Room, std::runtime_error> payload_;
 };
 }  // namespace model

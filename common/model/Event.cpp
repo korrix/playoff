@@ -25,6 +25,8 @@ nlohmann::json toJson<model::Event>(const model::Event &event) {
             case model::Event::Type::CREATE_ROOM:
                 jt = "create_room";
                 break;
+            case model::Event::Type::ERROR:
+                jt = "error";
             default:
                 break;
         }
@@ -53,6 +55,9 @@ model::Event fromJson<model::Event>(const nlohmann::json &json) {
     } else if(jt == "create_room") {
         event.type_    = model::Event::Type::CREATE_ROOM;
         event.payload_ = fromJson<model::Room>(jp);
+    } else if(jt == "exception") {
+        event.type_ = model::Event::Type::ERROR;
+        event.payload_ = fromJson<std::runtime_error>(jp);
     }
 
     return event;
