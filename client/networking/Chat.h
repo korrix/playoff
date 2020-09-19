@@ -1,5 +1,6 @@
 #pragma once
 #include "model/User.h"
+#include "model/Update.h"
 
 #include <memory>
 #include <string>
@@ -14,6 +15,7 @@ class Chat {
     void joinRoom(const std::string &name);
     void inviteUser(const std::string &roomName, const std::string &invitedUserName);
     void message(const std::string &roomName, const std::string &messageText);
+    model::Update requestUpdate();
 
   private:
     Chat(std::shared_ptr<Connection> connection, model::User current)

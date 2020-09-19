@@ -3,35 +3,49 @@
 namespace model {
 Event model::Event::make(const model::User &user) {
     model::Event ev;
-    ev.type_ = model::Event::Type::REGISTER_USER;
+    ev.type_    = model::Event::Type::REGISTER_USER;
     ev.payload_ = user;
     return ev;
 }
 
 Event model::Event::make(const model::Invitation &invitation) {
     model::Event ev;
-    ev.type_ = model::Event::Type::INVITE_USER;
+    ev.type_    = model::Event::Type::INVITE_USER;
     ev.payload_ = invitation;
     return ev;
 }
 
 Event model::Event::make(const model::Message &message) {
     model::Event ev;
-    ev.type_ = model::Event::Type::MESSAGE;
+    ev.type_    = model::Event::Type::MESSAGE;
     ev.payload_ = message;
     return ev;
 }
 
 Event model::Event::make(const model::Room &room) {
     model::Event ev;
-    ev.type_ = model::Event::Type::CREATE_ROOM;
+    ev.type_    = model::Event::Type::CREATE_ROOM;
     ev.payload_ = room;
+    return ev;
+}
+
+Event Event::make(const Update &update) {
+    model::Event ev;
+    ev.type_    = model::Event::Type::UPDATE;
+    ev.payload_ = update;
+    return ev;
+}
+
+Event Event::make(const UpdateRequest& updateRequest) {
+    model::Event ev;
+    ev.type_ = model::Event::Type::UPDATE_REQUEST;
+    ev.payload_ = updateRequest;
     return ev;
 }
 
 Event model::Event::make(const std::runtime_error &error) {
     model::Event ev;
-    ev.type_ = model::Event::Type::EV_ERROR;
+    ev.type_    = model::Event::Type::EV_ERROR;
     ev.payload_ = error;
     return ev;
 }
@@ -56,8 +70,8 @@ std::runtime_error fromJson<std::runtime_error>(const nlohmann::json &json) {
 }
 
 template<>
-nlohmann::json toJson<std::monostate>(const std::monostate&) {
-   return {};
+nlohmann::json toJson<std::monostate>(const std::monostate &) {
+    return {};
 }
 
 template<>
@@ -82,6 +96,12 @@ nlohmann::json toJson<model::Event>(const model::Event &event) {
                 break;
             case model::Event::Type::CREATE_ROOM:
                 jt = "create_room";
+                break;
+            case model::Event::Type::UPDATE_REQUEST:
+                jt = "update_request";
+                break;
+            case model::Event::Type::UPDATE:
+                jt = "update";
                 break;
             case model::Event::Type::EV_ERROR:
                 jt = "error";
@@ -113,8 +133,14 @@ model::Event fromJson<model::Event>(const nlohmann::json &json) {
     } else if(jt == "create_room") {
         event.type_    = model::Event::Type::CREATE_ROOM;
         event.payload_ = fromJson<model::Room>(jp);
+    } else if(jt == "update_request") {
+        event.type_    = model::Event::Type::UPDATE_REQUEST;
+        event.payload_ = fromJson<model::UpdateRequest>(jp);
+    } else if(jt == "update") {
+        event.type_ = model::Event::Type::UPDATE;
+        event.payload_ = fromJson<model::Update>(jp);
     } else if(jt == "error") {
-        event.type_ = model::Event::Type::EV_ERROR;
+        event.type_    = model::Event::Type::EV_ERROR;
         event.payload_ = fromJson<std::runtime_error>(jp);
     }
 

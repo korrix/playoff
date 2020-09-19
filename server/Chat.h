@@ -1,9 +1,10 @@
 #pragma once
 
 #include "model/Event.h"
+#include "model/Update.h"
 
-#include <unordered_map>
 #include <mutex>
+#include <unordered_map>
 
 namespace server {
 class Chat {
@@ -22,6 +23,8 @@ class Chat {
     model::Event handle(session id, const model::Room &ev);
     model::Event handle(session id, const model::Invitation &ev);
     model::Event handle(session id, const model::Message &ev);
+    model::Event handle(session id, const model::Update &ev);
+    model::Event handle(session id, const model::UpdateRequest &ev);
     model::Event handle(session id, const std::runtime_error &ev);
     model::Event handle(session id, std::monostate);
 
@@ -29,5 +32,6 @@ class Chat {
     std::unordered_map<std::string, session> nicknameSessionAssociations;
 
     std::unordered_map<std::string, std::vector<session>> rooms;
+    std::unordered_map<session, model::Update> updates;
 };
 }  // namespace server

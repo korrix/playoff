@@ -25,6 +25,7 @@ model::Event Chat::handle(session id, const model::User &ev) {
         spdlog::info("User \"{}\" not registered. Performing registration", ev.name());
         sessionNicknameAssociations[id] = ev.name();
         nicknameSessionAssociations[ev.name()] = id;
+        updates[id] = {};
     }
 
     return model::Event();
@@ -58,7 +59,7 @@ model::Event Chat::handle(session id, const model::Invitation &ev) {
         auto userIt = nicknameSessionAssociations.find(ev.invited().name());
         if(userIt != nicknameSessionAssociations.end()) {
             roomIt->second.push_back(userIt->second);
-            // TODO Direct message to invited user
+            updates[userIt->second].addInvitation(ev);
         } else {
             throw std::runtime_error("Unable to invite non-existing user");
         }
@@ -72,8 +73,29 @@ model::Event Chat::handle(session id, const model::Invitation &ev) {
 
 model::Event Chat::handle(session id, const model::Message &ev) {
     spdlog::info("Message from \"{}\" to room \"{}\"", ev.sender().name(), ev.room().name());
+
+    auto it = rooms.find(ev.room().name());
+    if(it != rooms.end()) {
+        for(auto &subscriber : it->second) {
+            updates[subscriber].addMessage(ev);
+        }
+    } else {
+        throw std::runtime_error("Unable to message non-existing room");
+    }
+
     return model::Event();
 }
+
+model::Event Chat::handle(session id, const model::UpdateRequest &){
+    spdlog::trace("Update requested");
+    auto package = std::move(updates[id]);
+    return model::Event::make(package);
+};
+
+model::Event Chat::handle(session id, const model::Update &ev){
+    spdlog::warn("Got update event. This is reserved for response");
+    return model::Event();
+};
 
 model::Event Chat::handle(session id, const std::runtime_error &ev) {
     spdlog::error("Some error occurred: ", ev.what());
@@ -90,6 +112,7 @@ void Chat::cleanup(Chat::session id) {
     if(it != sessionNicknameAssociations.end()) {
         nicknameSessionAssociations.erase(it->second);
         sessionNicknameAssociations.erase(id);
+        updates.erase(id);
     }
 }
 

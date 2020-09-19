@@ -3,6 +3,8 @@
 #include "Invitation.h"
 #include "Message.h"
 #include "Room.h"
+#include "Update.h"
+#include "UpdateRequest.h"
 #include "User.h"
 
 #include <variant>
@@ -23,7 +25,16 @@ namespace model {
 class Event {
   public:
     Event() = default;
-    enum class Type { INVALID_EVENT, REGISTER_USER, INVITE_USER, MESSAGE, CREATE_ROOM, EV_ERROR };
+    enum class Type {
+        INVALID_EVENT,
+        REGISTER_USER,
+        INVITE_USER,
+        MESSAGE,
+        CREATE_ROOM,
+        EV_ERROR,
+        UPDATE_REQUEST,
+        UPDATE
+    };
 
     [[nodiscard]] const Type &type() const;
 
@@ -37,12 +48,13 @@ class Event {
     static Event make(const Message &message);
     static Event make(const Room &message);
     static Event make(const std::runtime_error &error);
+    static Event make(const Update &update);
+    static Event make(const UpdateRequest& updateRequest);
 
   private:
-
     friend model::Event serialization::fromJson<model::Event>(const nlohmann::json &json);
 
     Type type_ = Type::INVALID_EVENT;
-    std::variant<std::monostate, User, Invitation, Message, Room, std::runtime_error> payload_;
+    std::variant<std::monostate, User, Invitation, Message, Room, UpdateRequest, Update, std::runtime_error> payload_;
 };
 }  // namespace model

@@ -45,4 +45,17 @@ void Chat::message(const std::string &roomName, const std::string &messageText) 
     connection_->request(model::Event::make(message));
 }
 
+model::Update Chat::requestUpdate() {
+    model::UpdateRequest updateRequest;
+
+    auto response = connection_->request(model::Event::make(updateRequest));
+    return response.visit([](auto, auto &update) -> model::Update {
+        if constexpr(std::is_same_v<std::decay_t<decltype(update)>, model::Update>) {
+            return update;
+        } else {
+            throw std::runtime_error("Got invalid update response from server");
+        }
+    });
+}
+
 }  // namespace networking
