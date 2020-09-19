@@ -21,7 +21,14 @@ model::Event Connection::request(const model::Event &event) {
         nlohmann::json json;
         response_stream >> json;
 
-        return serialization::fromJson<model::Event>(json);
+        auto res = serialization::fromJson<model::Event>(json);
+        res.visit([](auto, auto &error) {
+            if constexpr(std::is_base_of_v<std::exception, std::decay_t<decltype(error)>>) {
+                throw error;
+            }
+        });
+
+        return res;
     }
 }
 }  // namespace networking

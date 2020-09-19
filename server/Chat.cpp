@@ -34,11 +34,15 @@ model::Event Chat::handle(session id, const model::Room &ev) {
     spdlog::info("Registration for room \"{}\" requested", ev.name());
 
     auto it = rooms.find(ev.name());
-    if(it != rooms.end()) {
+    if(it == rooms.end()) {
         spdlog::info("Creating new room \"{}\"", ev.name());
         rooms.emplace(ev.name(), std::vector{id});
     } else {
         spdlog::info("Joining to existing room \"{}\"", ev.name());
+        if(std::find(it->second.begin(), it->second.end(), id) != it->second.end()) {
+            throw std::runtime_error("Unable to join same room twice!");
+        }
+
         it->second.push_back(id);
     }
 

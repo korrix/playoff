@@ -5,7 +5,6 @@
 #include "networking/Connection.h"
 #include "networking/Chat.h"
 #include "ui_ConnectDialog.h"
-#include <spdlog/spdlog.h>
 
 #include <QErrorMessage>
 
@@ -40,7 +39,6 @@ void ConnectDialog::cancel() {
 }
 
 void ConnectDialog::displayError(const QString &reason) {
-    spdlog::error(reason.toStdString());
     auto *msg = new QErrorMessage(this);
     msg->showMessage("Error: " + reason);
 }

@@ -18,9 +18,15 @@ class MainWindow : public QMainWindow {
 
   public slots:
     void chatConnected(std::shared_ptr<networking::Chat> chat);
+    void joinChannel();
+    void inviteUser();
+    void channelChanged(int index);
 
   private:
     std::unique_ptr<Ui::MainWindow> ui_;
     std::shared_ptr<networking::Chat> chat_;
+
+    void openChannelTab(const QString& channelName);
+    void displayError(const QString &reason);
 };
 }  // namespace ui
