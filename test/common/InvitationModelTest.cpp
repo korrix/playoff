@@ -31,3 +31,22 @@ TEST(Invitation, InvitationValidation) {
     invitation2.setInvited(invited);
     EXPECT_THROW(invitation.setSender(invited), std::runtime_error);
 }
+
+TEST(Invitation, InvitationSerialization) {
+    model::User user;
+    user.setName("valid");
+    model::Room room;
+    room.setName("valid");
+    model::User invited;
+    invited.setName("invited");
+    model::Invitation invitation;
+    invitation.setSender(user);
+    invitation.setRoom(room);
+    invitation.setInvited(invited);
+    invitation.setText("valid");
+
+    ASSERT_TRUE(invitation.isValid());
+
+    auto json = serialization::toJson(invitation);
+    ASSERT_EQ(serialization::fromJson<model::Message>(json), invitation);
+}

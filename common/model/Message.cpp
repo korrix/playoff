@@ -1,5 +1,7 @@
 #include "Message.h"
 
+#include <stdexcept>
+
 namespace model {
 void Message::setSender(const User &sender) {
     if(sender.isValid()) {
@@ -44,4 +46,29 @@ bool Message::isValid() const {
 bool Message::isTextValid(const std::string &text) {
     return !text.empty();
 }
+
+bool Message::operator==(const Message &other) const {
+    return (sender_ == other.sender()) && (room_ == other.room()) && (text_ == other.text());
 }
+
+}  // namespace model
+
+namespace serialization {
+template<>
+nlohmann::json toJson<model::Message>(const model::Message &user) {
+    nlohmann::json out;
+    out["sender"] = toJson(user.sender());
+    out["room"]   = toJson(user.room());
+    out["text"]   = user.text();
+    return out;
+}
+
+template<>
+model::Message fromJson<model::Message>(const nlohmann::json &json) {
+    model::Message message;
+    message.setSender(fromJson<model::User>(json["sender"]));
+    message.setRoom(fromJson<model::Room>(json["room"]));
+    message.setText(json["text"]);
+    return message;
+}
+}  // namespace serialization

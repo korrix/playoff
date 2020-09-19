@@ -1,4 +1,6 @@
 #pragma once
+#include "Serialization.h"
+
 #include <string>
 
 namespace model {
@@ -11,9 +13,18 @@ class Room {
 
     [[nodiscard]] bool isValid() const;
 
-    bool operator==(const Room& other) const;
+    bool operator==(const Room &other) const;
+
   private:
     std::string name_;
-    static bool isNameValid(const std::string& name);
+    static bool isNameValid(const std::string &name);
 };
-}
+}  // namespace model
+
+namespace serialization {
+template<>
+[[nodiscard]] nlohmann::json toJson<model::Room>(const model::Room &obj);
+
+template<>
+[[nodiscard]] model::Room fromJson<model::Room>(const nlohmann::json &json);
+}  // namespace serialization

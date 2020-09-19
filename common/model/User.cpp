@@ -32,3 +32,19 @@ bool User::operator!=(const User &other) const {
     return !(*this == other);
 }
 }  // namespace model
+
+namespace serialization {
+template<>
+nlohmann::json toJson<model::User>(const model::User &user) {
+    nlohmann::json out;
+    out["name"] = user.name();
+    return out;
+}
+
+template<>
+model::User fromJson<model::User>(const nlohmann::json &json) {
+    model::User user;
+    user.setName(json["name"]);
+    return user;
+}
+}

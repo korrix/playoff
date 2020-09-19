@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Serialization.h"
+
 #include <string>
 
 namespace model {
@@ -19,3 +21,11 @@ class User {
     static bool isNameValid(const std::string& name);
 };
 }  // namespace model
+
+namespace serialization {
+template<>
+[[nodiscard]] nlohmann::json toJson<model::User>(const model::User& obj);
+
+template<>
+[[nodiscard]] model::User fromJson<model::User>(const nlohmann::json& json);
+}

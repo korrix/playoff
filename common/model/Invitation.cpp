@@ -9,7 +9,7 @@ void Invitation::setSender(const User &sender) {
     }
 }
 
-void Invitation::setInvited(const User& invited) {
+void Invitation::setInvited(const User &invited) {
     if(invited.isValid() && (invited != sender())) {
         invited_ = invited;
     } else {
@@ -17,11 +17,32 @@ void Invitation::setInvited(const User& invited) {
     }
 }
 
-[[nodiscard]] const User& Invitation::invited() const {
+[[nodiscard]] const User &Invitation::invited() const {
     return invited_;
 }
 
 bool Invitation::isValid() const {
     return Message::isValid() && invited_.isValid();
+}
+
+bool Invitation::operator==(const Invitation &other) const {
+    return Message::operator==(other) && (invited_ == other.invited());
+}
+}  // namespace model
+
+namespace serialization {
+template<>
+nlohmann::json toJson<model::Invitation>(const model::Invitation &invitation) {
+    auto out = toJson<model::Message>(invitation);
+    out["invited"] = toJson(invitation.invited());
+    return out;
+}
+
+template<>
+model::Invitation fromJson<model::Invitation>(const nlohmann::json &json) {
+    model::Invitation invitation = fromJson<model::Message>(json);
+    invitation.setInvited(fromJson<model::User>(json["invited"]));
+
+    return invitation;
 }
 }

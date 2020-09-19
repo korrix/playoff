@@ -1,4 +1,5 @@
 project(playoff_test LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 17)
 
 include(GoogleTest)
 

@@ -27,3 +27,19 @@ TEST(Message, MessageValidation) {
     EXPECT_TRUE(message.isValid());
     EXPECT_EQ(message.text(), "Text");
 }
+
+TEST(Message, MessageSerialization) {
+    model::User user;
+    user.setName("valid");
+    model::Room room;
+    room.setName("valid");
+    model::Message message;
+    message.setSender(user);
+    message.setRoom(room);
+    message.setText("valid");
+
+    ASSERT_TRUE(message.isValid());
+
+    auto json = serialization::toJson(message);
+    ASSERT_EQ(serialization::fromJson<model::Message>(json), message);
+}
