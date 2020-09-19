@@ -34,7 +34,7 @@ void ChatSession::dispatch(std::istream &stream) {
         stream >> json;
 
         auto event    = serialization::fromJson<model::Event>(json);
-        auto response = chat_.handleEvent(event);
+        auto response = chat_.handleEvent(this, event);
         sendResponse(response);
 
     } catch(std::exception ex) {
@@ -62,5 +62,6 @@ std::string ChatSession::getRemoteIP() const {
 
 void ChatSession::cleanup() {
     spdlog::info("Client disconnected: {}", getRemoteIP());
+    chat_.cleanup(this);
 }
 }  // namespace server
