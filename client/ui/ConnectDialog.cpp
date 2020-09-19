@@ -1,12 +1,17 @@
 #include "ConnectDialog.h"
 
 #include "model/User.h"
+#include "networking/ConnectionManager.h"
+#include "networking/Connection.h"
+#include "networking/Chat.h"
 #include "ui_ConnectDialog.h"
+#include <spdlog/spdlog.h>
 
 #include <QErrorMessage>
 
 namespace client::ui {
-ConnectDialog::ConnectDialog(){
+ConnectDialog::ConnectDialog(networking::ConnectionManager &connectionManager)
+    : connectionManager_(connectionManager) {
     ui_ = std::make_unique<Ui::ConnectDialog>();
     ui_->setupUi(this);
 }
@@ -15,7 +20,14 @@ ConnectDialog::~ConnectDialog() = default;
 
 void ConnectDialog::connect() {
     try {
-      // TODO
+        auto server = ui_->serverInput->text().toStdString();
+        auto port   = static_cast<unsigned short>(ui_->portInput->value());
+
+        std::shared_ptr<networking::Connection> connection = connectionManager_.connect(server, port);
+
+        auto username = ui_->usernameInput->text().toStdString();
+        auto chat = networking::Chat::init(connection, username);
+
     } catch(const std::exception &ex) {
         displayError(ex.what());
     }
@@ -26,5 +38,8 @@ void ConnectDialog::cancel() {
 }
 
 void ConnectDialog::displayError(const QString &reason) {
+    spdlog::error(reason.toStdString());
+    QErrorMessage msg;
+    msg.showMessage("Error: " + reason);
 }
 }  // namespace client::ui

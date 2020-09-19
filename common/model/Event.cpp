@@ -1,12 +1,70 @@
 #include "Event.h"
 
 namespace model {
+Event model::Event::make(const model::User &user) {
+    model::Event ev;
+    ev.type_ = model::Event::Type::REGISTER_USER;
+    ev.payload_ = user;
+    return ev;
+}
+
+Event model::Event::make(const model::Invitation &invitation) {
+    model::Event ev;
+    ev.type_ = model::Event::Type::INVITE_USER;
+    ev.payload_ = invitation;
+    return ev;
+}
+
+Event model::Event::make(const model::Message &message) {
+    model::Event ev;
+    ev.type_ = model::Event::Type::MESSAGE;
+    ev.payload_ = message;
+    return ev;
+}
+
+Event model::Event::make(const model::Room &room) {
+    model::Event ev;
+    ev.type_ = model::Event::Type::CREATE_ROOM;
+    ev.payload_ = room;
+    return ev;
+}
+
+Event model::Event::make(const std::runtime_error &error) {
+    model::Event ev;
+    ev.type_ = model::Event::Type::ERROR;
+    ev.payload_ = error;
+    return ev;
+}
+
 const Event::Type &Event::type() const {
     return type_;
 }
 }  // namespace model
 
 namespace serialization {
+
+template<>
+nlohmann::json toJson<std::runtime_error>(const std::runtime_error &error) {
+    nlohmann::json out;
+    out["error"] = error.what();
+    return out;
+}
+
+template<>
+std::runtime_error fromJson<std::runtime_error>(const nlohmann::json &json) {
+    return std::runtime_error(json["error"]);
+}
+
+template<>
+nlohmann::json toJson<std::monostate>(const std::monostate&) {
+   return {};
+}
+
+template<>
+std::monostate fromJson<std::monostate>(const nlohmann::json &json) {
+    return {};
+}
+
 template<>
 nlohmann::json toJson<model::Event>(const model::Event &event) {
     return event.visit([](auto &type, const auto &payload) {

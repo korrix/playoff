@@ -32,7 +32,14 @@ class Event {
         return std::visit([visitor, this](auto &&payload) { return visitor(type_, payload); }, payload_);
     }
 
+    static Event make(const User &user);
+    static Event make(const Invitation &invitation);
+    static Event make(const Message &message);
+    static Event make(const Room &message);
+    static Event make(const std::runtime_error &error);
+
   private:
+
     friend model::Event serialization::fromJson<model::Event>(const nlohmann::json &json);
 
     Type type_ = Type::INVALID_EVENT;
