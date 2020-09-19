@@ -3,8 +3,13 @@
 
 namespace client::ui {
 MainWindow::MainWindow() {
-    Ui::MainWindow ui;
-    ui.setupUi(this);
+    ui_ = std::make_unique<Ui::MainWindow>();
+    ui_->setupUi(this);
+}
+
+void MainWindow::chatConnected(std::shared_ptr<networking::Chat> chat) {
+    chat_ = chat;
+    ui_->centralWidget->setEnabled(true);
 }
 }
 

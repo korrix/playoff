@@ -19,7 +19,7 @@ model::Event Chat::handle(session id, const model::User &ev) {
             spdlog::info("User \"{}\" already registered for same session", ev.name());
         } else {
             spdlog::error("Username \"{}\" is in use", ev.name());
-            return model::Event::make(std::runtime_error("Please choose different username!"));
+            throw std::runtime_error("Please choose different username!");
         }
     } else {
         spdlog::info("User \"{}\" not registered. Performing registration", ev.name());

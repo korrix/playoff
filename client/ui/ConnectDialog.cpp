@@ -27,6 +27,8 @@ void ConnectDialog::connect() {
 
         auto username = ui_->usernameInput->text().toStdString();
         auto chat = networking::Chat::init(connection, username);
+        emit chatConnected(std::move(chat));
+        accept();
 
     } catch(const std::exception &ex) {
         displayError(ex.what());
@@ -39,7 +41,7 @@ void ConnectDialog::cancel() {
 
 void ConnectDialog::displayError(const QString &reason) {
     spdlog::error(reason.toStdString());
-    QErrorMessage msg;
-    msg.showMessage("Error: " + reason);
+    auto *msg = new QErrorMessage(this);
+    msg->showMessage("Error: " + reason);
 }
 }  // namespace client::ui

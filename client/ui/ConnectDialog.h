@@ -4,6 +4,7 @@
 
 namespace networking {
 class ConnectionManager;
+class Chat;
 }
 
 namespace Ui {
@@ -20,6 +21,9 @@ class ConnectDialog : public QDialog {
   public slots:
     void connect();
     void cancel();
+
+  signals:
+    void chatConnected(std::shared_ptr<networking::Chat>);
 
   private:
     networking::ConnectionManager& connectionManager_;

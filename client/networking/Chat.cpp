@@ -9,7 +9,7 @@ std::unique_ptr<Chat> Chat::init(std::shared_ptr<Connection> connection, const s
     user.setName(username);
     auto response = connection->request(model::Event::make(user));
     response.visit([](auto, auto &error) {
-        if constexpr(std::is_convertible_v<decltype(error), std::exception &>) {
+        if constexpr(std::is_base_of_v<std::exception, std::decay_t<decltype(error)>>) {
             throw error;
         }
     });

@@ -113,7 +113,7 @@ model::Event fromJson<model::Event>(const nlohmann::json &json) {
     } else if(jt == "create_room") {
         event.type_    = model::Event::Type::CREATE_ROOM;
         event.payload_ = fromJson<model::Room>(jp);
-    } else if(jt == "exception") {
+    } else if(jt == "error") {
         event.type_ = model::Event::Type::EV_ERROR;
         event.payload_ = fromJson<std::runtime_error>(jp);
     }
